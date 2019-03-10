@@ -5,6 +5,11 @@
   "version": "1.0.0-beta",
   "minimum-stability": "beta",
   "prefer-stable": true,
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  },
   "require": {
     "php": "^7.1"
   },
