@@ -3,6 +3,8 @@
   "description": "Facade for PSR-6 and PSR-16 compatible PHP Cache library to provide an easy-to-use and more strict SimpleCache-inspired API with tag support.",
   "type": "library",
   "version": "1.0.0-beta",
+  "minimum-stability": "beta",
+  "prefer-stable": true,
   "require": {
     "php": "^7.1",
     "cache/cache": "^1.0"
@@ -18,6 +20,5 @@
       "homepage": "http://www.neoflow.ch",
       "role": "Developer"
     }
-  ],
-  "minimum-stability": "stable"
+  ]
 }
