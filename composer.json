@@ -1,6 +1,6 @@
 {
   "name": "neoflow/cache-facade",
-  "description": "Facade for PSR-6 and PSR-16 compatible PHP Cache library to provide an easy-to-use and more strict SimpleCache-inspired API with tag support.",
+  "description": "Facade for the PSR-6 and PSR-16 compliant PHP Cache library to provide an easy-to-use and SimpleCache-inspired API with tag support.",
   "type": "library",
   "version": "1.0.0-beta",
   "minimum-stability": "beta",
