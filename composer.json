@@ -1,0 +1,22 @@
+{
+  "name": "neoflow/cache-facade",
+  "description": "Facade for PSR-6 and PSR-16 compatible PHP Cache library to provide an easy-to-use and more strict SimpleCache-inspired API with tag support.",
+  "type": "library",
+  "version": "1.0.0-beta",
+  "require": {
+    "cache/cache": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jonathan Nessier",
+      "email": "jonathan.nessier@neoflow.ch",
+      "homepage": "http://www.neoflow.ch",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "stable"
+}
