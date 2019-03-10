@@ -4,6 +4,7 @@
   "type": "library",
   "version": "1.0.0-beta",
   "require": {
+    "php": "^7.1",
     "cache/cache": "^1.0"
   },
   "require-dev": {
