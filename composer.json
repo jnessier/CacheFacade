@@ -6,10 +6,11 @@
   "minimum-stability": "beta",
   "prefer-stable": true,
   "require": {
-    "php": "^7.1",
+    "php": "^7.1"
+  },
+  "require-dev": {
     "cache/cache": "^1.0"
   },
-  "require-dev": {},
   "license": "MIT",
   "authors": [
     {

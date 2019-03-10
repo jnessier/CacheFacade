@@ -4,8 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dea225064080cf9e9daeea0c1c239d32",
-    "packages": [
+    "content-hash": "bed5c2aeba2299c86fdbd4c9fde46cce",
+    "packages": [],
+    "packages-dev": [
         {
             "name": "cache/cache",
             "version": "1.0.0",
@@ -400,7 +401,6 @@
             "time": "2017-10-23T01:57:42+00:00"
         }
     ],
-    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": [],
