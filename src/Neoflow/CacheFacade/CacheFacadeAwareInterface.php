@@ -9,5 +9,5 @@ interface CacheFacadeAwareInterface
      *
      * @param CacheFacadeInterface $cache Cache facade instance
      */
-    public function setCache(CacheFacadeInterface $cache);
+    public function setCacheFacade(CacheFacadeInterface $cache);
 }
