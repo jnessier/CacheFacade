@@ -4,7 +4,7 @@ namespace Neoflow\CacheFacade;
 
 use Cache\Adapter\Common\AbstractCachePool;
 
-class CacheFacadeFacade implements CacheFacadeInterface
+class CacheFacade implements CacheFacadeInterface
 {
     /**
      * @var AbstractCachePool
