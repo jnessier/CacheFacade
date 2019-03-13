@@ -2,7 +2,7 @@
 
 namespace Neoflow\CacheFacade;
 
-interface CacheAwareInterface
+interface CacheFacadeAwareInterface
 {
     /**
      * Set cache facade.
