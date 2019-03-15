@@ -17,7 +17,7 @@ class CacheFacade implements CacheFacadeInterface
     protected $options = [
         'autoCommit' => true,
         'globalTags' => [],
-        'defaultTtl' => 0,
+        'defaultTtl' => null,
     ];
 
     /**
@@ -45,8 +45,8 @@ class CacheFacade implements CacheFacadeInterface
     /**
      * Fetch cache value by key.
      *
-     * @param string $key     Cache key
-     * @param mixed  $default Default value
+     * @param string $key Cache key
+     * @param mixed $default Default value
      *
      * @return mixed
      *
@@ -60,16 +60,16 @@ class CacheFacade implements CacheFacadeInterface
     /**
      * Store cache value by key.
      *
-     * @param string $key   Cache key
-     * @param mixed  $value Value to cache
-     * @param int    $ttl   Cache lifetime
-     * @param array  $tags  Cache tags
+     * @param string $key Cache key
+     * @param mixed $value Value to cache
+     * @param int $ttl Cache lifetime
+     * @param array $tags Cache tags
      *
      * @return bool
      *
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function store(string $key, $value, int $ttl = 0, array $tags = []): bool
+    public function store(string $key, $value, int $ttl = null, array $tags = []): bool
     {
         $item = $this->cachePool
             ->getItem($key)
@@ -91,7 +91,7 @@ class CacheFacade implements CacheFacadeInterface
      */
     public function delete(string $key): bool
     {
-        return $this->cachePool->delete($key);
+        return $this->cachePool->deleteItem($key);
     }
 
     /**
@@ -105,7 +105,7 @@ class CacheFacade implements CacheFacadeInterface
      */
     public function exists(string $key): bool
     {
-        return $this->cachePool->has($key);
+        return $this->cachePool->hasItem($key);
     }
 
     /**
@@ -115,16 +115,16 @@ class CacheFacade implements CacheFacadeInterface
      */
     public function clear(): bool
     {
-        return $this->cachePool->commit();
+        return $this->cachePool->clear();
     }
 
     /**
      * Store cache value by key deferred, when the destructor gets called.
      *
-     * @param string $key   Cache key
-     * @param mixed  $value Value to cache
-     * @param int    $ttl   Time to live in milliseconds)
-     * @param array  $tags  An array of tags
+     * @param string $key Cache key
+     * @param mixed $value Value to cache
+     * @param int $ttl Time to live in milliseconds)
+     * @param array $tags An array of tags
      *
      * @return bool
      *
@@ -134,7 +134,7 @@ class CacheFacade implements CacheFacadeInterface
     {
         $tags = array_replace($this->options['globalTags'], $tags);
 
-        if (null === $ttl) {
+        if (-1 === $ttl) {
             $ttl = $this->options['defaultTtl'];
         }
 
