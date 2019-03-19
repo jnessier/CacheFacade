@@ -31,7 +31,7 @@ class CacheFacade implements CacheFacadeInterface
      */
     public function __construct(CacheItemPoolInterface $cachePool = null, array $options = [])
     {
-        array_merge($options, $this->options);
+        $this->options = array_merge($this->options, $options);
 
         if ($cachePool) {
             $this->cachePool = $cachePool;
