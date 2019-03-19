@@ -11,11 +11,11 @@
     ]
   },
   "require": {
-    "php": "^7.1"
+    "php": "^7.1",
+    "cache/void-adapter": "^1.0",
+    "cache/prefixed-cache": "^1.0"
   },
-  "require-dev": {
-    "cache/cache": "^1.0"
-  },
+  "require-dev": {},
   "license": "MIT",
   "authors": [
     {

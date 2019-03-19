@@ -3,11 +3,15 @@
 namespace Neoflow\CacheFacade;
 
 use Cache\Adapter\Common\AbstractCachePool;
+use Cache\Adapter\Void\VoidCachePool;
+use Cache\Prefixed\PrefixedCachePool;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 
 class CacheFacade implements CacheFacadeInterface
 {
     /**
-     * @var AbstractCachePool
+     * @var CacheItemPoolInterface
      */
     protected $cachePool;
 
@@ -16,20 +20,28 @@ class CacheFacade implements CacheFacadeInterface
      */
     protected $options = [
         'autoCommit' => true,
-        'globalTags' => [],
-        'defaultTtl' => null,
+        'prefix' => '',
     ];
 
     /**
      * Constructor.
      *
-     * @param AbstractCachePool $cachePool Cache pool instance
+     * @param CacheItemPoolInterface $cachePool Cache pool instance
+     * @param array                  $options   Custom options
      */
-    public function __construct(AbstractCachePool $cachePool, array $options = [])
+    public function __construct(CacheItemPoolInterface $cachePool = null, array $options = [])
     {
         array_merge($this->options, $options);
 
-        $this->cachePool = $cachePool;
+        if ($cachePool) {
+            $this->cachePool = $cachePool;
+        } else {
+            $this->cachePool = new VoidCachePool();
+        }
+
+        if ($this->options['prefix']) {
+            $this->cachePool = new PrefixedCachePool($this->cachePool, preg_replace('/[^A-Za-z0-9]/', '', $this->options['prefix']));
+        }
     }
 
     /**
@@ -45,29 +57,34 @@ class CacheFacade implements CacheFacadeInterface
     /**
      * Fetch cache value by key.
      *
-     * @param string $key Cache key
-     * @param mixed $default Default value
+     * @param string $key     Cache key
+     * @param mixed  $default Default value
      *
      * @return mixed
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function fetch(string $key, $default = null)
     {
-        return $this->cachePool->get($key, $default);
+        $item = $this->cachePool->getItem($key);
+        if (!$item->isHit()) {
+            return $default;
+        }
+
+        return $item->get();
     }
 
     /**
      * Store cache value by key.
      *
-     * @param string $key Cache key
-     * @param mixed $value Value to cache
-     * @param int $ttl Cache lifetime
-     * @param array $tags Cache tags
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int    $ttl   Cache lifetime
+     * @param array  $tags  Cache tags
      *
      * @return bool
      *
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function store(string $key, $value, int $ttl = null, array $tags = []): bool
     {
@@ -87,7 +104,7 @@ class CacheFacade implements CacheFacadeInterface
      *
      * @return bool
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function delete(string $key): bool
     {
@@ -101,7 +118,7 @@ class CacheFacade implements CacheFacadeInterface
      *
      * @return bool
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function exists(string $key): bool
     {
@@ -121,22 +138,18 @@ class CacheFacade implements CacheFacadeInterface
     /**
      * Store cache value by key deferred, when the destructor gets called.
      *
-     * @param string $key Cache key
-     * @param mixed $value Value to cache
-     * @param int $ttl Time to live in milliseconds)
-     * @param array $tags An array of tags
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int    $ttl   Time to live in milliseconds)
+     * @param array  $tags  An array of tags
      *
      * @return bool
      *
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function storeDeferred(string $key, $value, int $ttl = null, array $tags = []): bool
     {
         $tags = array_replace($this->options['globalTags'], $tags);
-
-        if (-1 === $ttl) {
-            $ttl = $this->options['defaultTtl'];
-        }
 
         $item = $this->cachePool
             ->getItem($key)
@@ -148,15 +161,15 @@ class CacheFacade implements CacheFacadeInterface
     }
 
     /**
-     * Delete cache values by tag.
+     * Delete cache values by tags.
      *
-     * @param string $tag Tag of the values
+     * @param array $tags Tags of the values
      *
      * @return bool
      */
-    public function deleteByTag(string $tag): bool
+    public function deleteByTags(array $tags): bool
     {
-        return $this->cachePool->invalidateTags($tag);
+        return $this->cachePool->invalidateTags($tags);
     }
 
     /**

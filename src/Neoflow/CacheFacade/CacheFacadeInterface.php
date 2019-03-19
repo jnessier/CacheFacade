@@ -7,8 +7,8 @@ interface CacheFacadeInterface
     /**
      * Fetch cache value by key.
      *
-     * @param string $key Cache key
-     * @param mixed $default Default value
+     * @param string $key     Cache key
+     * @param mixed  $default Default value
      *
      * @return mixed
      */
@@ -17,10 +17,10 @@ interface CacheFacadeInterface
     /**
      * Store cache value by key.
      *
-     * @param string $key Cache key
-     * @param mixed $value Value to cache
-     * @param int $ttl Cache lifetime
-     * @param array $tags Cache tags
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int    $ttl   Cache lifetime
+     * @param array  $tags  Cache tags
      *
      * @return bool
      */
@@ -54,21 +54,21 @@ interface CacheFacadeInterface
     /**
      * Store cache value by key deferred, when the destructor gets called.
      *
-     * @param string $key Cache key
-     * @param mixed $value Value to cache
-     * @param int $ttl Cache lifetime
-     * @param array $tags Cache tags
+     * @param string $key   Cache key
+     * @param mixed  $value Value to cache
+     * @param int    $ttl   Cache lifetime
+     * @param array  $tags  Cache tags
      *
      * @return bool
      */
     public function storeDeferred(string $key, $value, int $ttl = 0, array $tags = []): bool;
 
     /**
-     * Delete cache values by tag.
+     * Delete cache values by tags.
      *
-     * @param string $tag Tag of the values
+     * @param array $tags Tags of the values
      *
      * @return bool
      */
-    public function deleteByTag(string $tag): bool;
+    public function deleteByTags(array $tags): bool;
 }
