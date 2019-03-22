@@ -2,8 +2,17 @@
 
 namespace Neoflow\CacheFacade;
 
+use Cache\Adapter\Common\AbstractCachePool;
+
 interface CacheFacadeInterface
 {
+    /**
+     * Get cache pool.
+     *
+     * @return AbstractCachePool Cache pool instance
+     */
+    public function getCachePool(): AbstractCachePool;
+
     /**
      * Fetch cache value by key.
      *
