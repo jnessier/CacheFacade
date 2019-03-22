@@ -2,7 +2,6 @@
 
 namespace Neoflow\CacheFacade;
 
-use Cache\Adapter\Common\AbstractCachePool;
 use Cache\Adapter\Void\VoidCachePool;
 use Cache\Prefixed\PrefixedCachePool;
 use Psr\Cache\CacheItemPoolInterface;
@@ -47,9 +46,9 @@ class CacheFacade implements CacheFacadeInterface
     /**
      * Get cache pool.
      *
-     * @return AbstractCachePool Cache pool instance
+     * @return CacheItemPoolInterface Cache pool instance
      */
-    public function getCachePool(): AbstractCachePool
+    public function getCachePool(): CacheItemPoolInterface
     {
         return $this->cachePool;
     }
