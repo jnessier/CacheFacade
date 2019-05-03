@@ -4,8 +4,8 @@ namespace Neoflow\CacheFacade;
 
 use Cache\Adapter\Void\VoidCachePool;
 use Cache\Prefixed\PrefixedCachePool;
+use Psr\Cache\CacheException;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Cache\InvalidArgumentException;
 
 class CacheFacade implements CacheFacadeInterface
 {
@@ -46,7 +46,7 @@ class CacheFacade implements CacheFacadeInterface
     /**
      * Get cache pool.
      *
-     * @return CacheItemPoolInterface Cache pool instance
+     * @return CacheItemPoolInterface
      */
     public function getCachePool(): CacheItemPoolInterface
     {
@@ -60,17 +60,19 @@ class CacheFacade implements CacheFacadeInterface
      * @param mixed  $default Default value
      *
      * @return mixed
-     *
-     * @throws InvalidArgumentException
      */
     public function fetch(string $key, $default = null)
     {
-        $item = $this->cachePool->getItem($key);
-        if (!$item->isHit()) {
+        try {
+            $item = $this->cachePool->getItem($key);
+            if (!$item->isHit()) {
+                return $default;
+            }
+
+            return $item->get();
+        } catch (CacheException $ex) {
             return $default;
         }
-
-        return $item->get();
     }
 
     /**
@@ -82,18 +84,20 @@ class CacheFacade implements CacheFacadeInterface
      * @param array  $tags  Cache tags
      *
      * @return bool
-     *
-     * @throws InvalidArgumentException
      */
     public function store(string $key, $value, int $ttl = null, array $tags = []): bool
     {
-        $item = $this->cachePool
-            ->getItem($key)
-            ->set($value)
-            ->expiresAfter($ttl)
-            ->setTags($tags);
+        try {
+            $item = $this->cachePool
+                ->getItem($key)
+                ->set($value)
+                ->expiresAfter($ttl)
+                ->setTags($tags);
 
-        return $this->cachePool->save($item);
+            return $this->cachePool->save($item);
+        } catch (CacheException $ex) {
+            return false;
+        }
     }
 
     /**
@@ -102,12 +106,14 @@ class CacheFacade implements CacheFacadeInterface
      * @param string $key Cache key
      *
      * @return bool
-     *
-     * @throws InvalidArgumentException
      */
     public function delete(string $key): bool
     {
-        return $this->cachePool->deleteItem($key);
+        try {
+            return $this->cachePool->deleteItem($key);
+        } catch (CacheException $ex) {
+            return false;
+        }
     }
 
     /**
@@ -116,12 +122,14 @@ class CacheFacade implements CacheFacadeInterface
      * @param string $key Cache key
      *
      * @return bool
-     *
-     * @throws InvalidArgumentException
      */
     public function exists(string $key): bool
     {
-        return $this->cachePool->hasItem($key);
+        try {
+            return $this->cachePool->hasItem($key);
+        } catch (CacheException $ex) {
+            return false;
+        }
     }
 
     /**
@@ -143,20 +151,22 @@ class CacheFacade implements CacheFacadeInterface
      * @param array  $tags  An array of tags
      *
      * @return bool
-     *
-     * @throws InvalidArgumentException
      */
     public function storeDeferred(string $key, $value, int $ttl = null, array $tags = []): bool
     {
-        $tags = array_replace($this->options['globalTags'], $tags);
+        try {
+            $tags = array_replace($this->options['globalTags'], $tags);
 
-        $item = $this->cachePool
-            ->getItem($key)
-            ->set($value)
-            ->expiresAfter($ttl)
-            ->setTags($tags);
+            $item = $this->cachePool
+                ->getItem($key)
+                ->set($value)
+                ->expiresAfter($ttl)
+                ->setTags($tags);
 
-        return $this->cachePool->saveDeferred($item);
+            return $this->cachePool->saveDeferred($item);
+        } catch (CacheException $ex) {
+            return false;
+        }
     }
 
     /**
