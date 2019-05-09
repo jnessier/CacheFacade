@@ -2,15 +2,15 @@
 
 namespace Neoflow\CacheFacade;
 
+use Cache\Adapter\Common\AbstractCachePool;
 use Cache\Adapter\Void\VoidCachePool;
-use Cache\Prefixed\PrefixedCachePool;
 use Psr\Cache\CacheException;
 use Psr\Cache\CacheItemPoolInterface;
 
 class CacheFacade implements CacheFacadeInterface
 {
     /**
-     * @var CacheItemPoolInterface
+     * @var AbstractCachePool
      */
     protected $cachePool;
 
@@ -20,6 +20,7 @@ class CacheFacade implements CacheFacadeInterface
     protected $options = [
         'autoCommit' => true,
         'prefix' => '',
+        'tags' => [],
     ];
 
     /**
@@ -32,14 +33,12 @@ class CacheFacade implements CacheFacadeInterface
     {
         $this->options = array_merge($this->options, $options);
 
-        if ($cachePool) {
-            $this->cachePool = $cachePool;
-        } else {
-            $this->cachePool = new VoidCachePool();
-        }
+        // Sanitized prefix
+        $this->options['prefix'] = preg_replace('/[^A-Za-z0-9]/', '', $this->options['prefix']);
 
-        if ($this->options['prefix']) {
-            $this->cachePool = new PrefixedCachePool($this->cachePool, preg_replace('/[^A-Za-z0-9]/', '', $this->options['prefix']));
+        $this->cachePool = $cachePool;
+        if (!$this->cachePool) {
+            $this->cachePool = new VoidCachePool();
         }
     }
 
@@ -64,7 +63,7 @@ class CacheFacade implements CacheFacadeInterface
     public function fetch(string $key, $default = null)
     {
         try {
-            $item = $this->cachePool->getItem($key);
+            $item = $this->cachePool->getItem($this->options['prefix'].$key);
             if (!$item->isHit()) {
                 return $default;
             }
@@ -89,10 +88,10 @@ class CacheFacade implements CacheFacadeInterface
     {
         try {
             $item = $this->cachePool
-                ->getItem($key)
+                ->getItem($this->options['prefix'].$key)
                 ->set($value)
                 ->expiresAfter($ttl)
-                ->setTags($tags);
+                ->setTags(array_replace($this->options['tags'], $tags));
 
             return $this->cachePool->save($item);
         } catch (CacheException $ex) {
@@ -126,7 +125,7 @@ class CacheFacade implements CacheFacadeInterface
     public function exists(string $key): bool
     {
         try {
-            return $this->cachePool->hasItem($key);
+            return $this->cachePool->hasItem($this->options['prefix'].$key);
         } catch (CacheException $ex) {
             return false;
         }
@@ -155,13 +154,11 @@ class CacheFacade implements CacheFacadeInterface
     public function storeDeferred(string $key, $value, int $ttl = null, array $tags = []): bool
     {
         try {
-            $tags = array_replace($this->options['globalTags'], $tags);
-
             $item = $this->cachePool
-                ->getItem($key)
+                ->getItem($this->options['prefix'].$key)
                 ->set($value)
                 ->expiresAfter($ttl)
-                ->setTags($tags);
+                ->setTags(array_replace($this->options['tags'], $tags));
 
             return $this->cachePool->saveDeferred($item);
         } catch (CacheException $ex) {
@@ -179,6 +176,22 @@ class CacheFacade implements CacheFacadeInterface
     public function deleteByTags(array $tags): bool
     {
         return $this->cachePool->invalidateTags($tags);
+    }
+
+    /**
+     * Delete cache values by tag.
+     *
+     * @param string $tag Tag of the values
+     *
+     * @return bool
+     */
+    public function deleteByTag(string $tag): bool
+    {
+        try {
+            return $this->cachePool->invalidateTag($tag);
+        } catch (CacheException $ex) {
+            return false;
+        }
     }
 
     /**

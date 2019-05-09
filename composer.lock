@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bcd1a9f618caf04c0967e479ae5742d3",
+    "content-hash": "b86bfb17e3e05042e9af39683984583c",
     "packages": [
         {
             "name": "cache/adapter-common",
@@ -128,62 +128,6 @@
                 "psr-6"
             ],
             "time": "2017-07-16T21:58:17+00:00"
-        },
-        {
-            "name": "cache/prefixed-cache",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-cache/prefixed-cache.git",
-                "reference": "2f584c6505cbf96b3053849f7a22137725e8aa85"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-cache/prefixed-cache/zipball/2f584c6505cbf96b3053849f7a22137725e8aa85",
-                "reference": "2f584c6505cbf96b3053849f7a22137725e8aa85",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.6 || ^7.0",
-                "psr/cache": "^1.0"
-            },
-            "require-dev": {
-                "cache/integration-tests": "^0.16",
-                "phpunit/phpunit": "^5.7.21"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cache\\Prefixed\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tobias Nyholm",
-                    "email": "tobias.nyholm@gmail.com",
-                    "homepage": "https://github.com/Nyholm"
-                }
-            ],
-            "description": "A decorator that makes your cache support prefix",
-            "homepage": "http://www.php-cache.com/en/latest/",
-            "keywords": [
-                "cache",
-                "prefix",
-                "psr-6"
-            ],
-            "time": "2017-07-17T11:14:46+00:00"
         },
         {
             "name": "cache/tag-interop",
